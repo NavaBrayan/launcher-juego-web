@@ -17,12 +17,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -31,9 +31,18 @@ jobs:
         run: pnpm install
 
       - name: Build Tauri app
-        run: pnpm tauri build
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: .
+          tagName: v1.0.0
+          releaseName: 'Wartune Lite Launcher v1.0.0'
+          releaseBody: 'Ejecutable oficial para Windows'
+          releaseDraft: false
+          prerelease: false
 
-      - name: Upload EXE artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Wartune-Lite-Launcher-Windows
